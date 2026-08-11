@@ -1,0 +1,51 @@
+{
+  "name": "com.mafatih.aljinan",
+  "displayName": "الكوثر",
+  "version": "3.0.0",
+  "description": "تطبيق إسلامي شامل: أذكار، مسبحة، قرآن، مواقيت صلاة، وقبلة",
+  "main": "index.js",
+  "scripts": {
+    "build": "cordova build android --release",
+    "build:debug": "cordova build android",
+    "run": "cordova run android"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "azkar",
+    "islamic",
+    "alkawthar"
+  ],
+  "author": "الكوثر",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "cordova": "^12.0.0",
+    "cordova-android": "^15.1.0",
+    "cordova-plugin-adhan-alarm": "file:native-plugins/cordova-plugin-adhan-alarm",
+    "cordova-plugin-device": "^3.0.0",
+    "cordova-plugin-device-orientation": "^3.0.0",
+    "cordova-plugin-geolocation": "^5.0.0",
+    "cordova-plugin-statusbar": "^4.0.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ],
+    "plugins": {
+      "cordova-plugin-geolocation": {
+        "GPS_REQUIRED": "true"
+      },
+      "cordova-plugin-device": {},
+      "cordova-plugin-device-orientation": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-wallpaper": {},
+      "cordova-plugin-local-notification": {
+        "ANDROIDX_CORE_VERSION": "1.12.0"
+      },
+      "cordova-plugin-adhan-alarm": {}
+    }
+  },
+  "dependencies": {
+    "cordova-plugin-local-notification": "1.2.3",
+    "cordova-plugin-wallpaper": "0.1.1"
+  }
+}

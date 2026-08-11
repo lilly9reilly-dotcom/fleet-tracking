@@ -1,0 +1,10 @@
+﻿# Built APK binaries (rebuild via android-app/build.ps1)
+*.apk
+
+# Cordova generated / deps (android-app/.gitignore also covers these)
+android-app/node_modules/
+android-app/platforms/
+android-app/plugins/
+
+# Local chat / scratch notes
+chat-*.txt

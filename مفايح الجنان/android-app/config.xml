@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.mafatih.aljinan" version="3.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>الكوثر</name>
+    <description>
+        تطبيق إسلامي شامل: أذكار الصباح والمساء، المسبحة، القرآن، مواقيت الصلاة، واتجاه القبلة.
+    </description>
+    <author email="dev@alkawthar.local" href="https://alkawthar.local">
+        الكوثر
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="Fullscreen" value="false" />
+    <preference name="SplashScreenDelay" value="1500" />
+    <preference name="AutoHideSplashScreen" value="true" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="StatusBarOverlaysWebView" value="false" />
+    <preference name="StatusBarBackgroundColor" value="#06251c" />
+    <preference name="AndroidXEnabled" value="true" />
+    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    <preference name="GradlePluginKotlinEnabled" value="true" />
+    <plugin name="cordova-plugin-geolocation" spec="^5.0.0">
+        <variable name="GPS_REQUIRED" value="false" />
+    </plugin>
+    <plugin name="cordova-plugin-device-orientation" spec="^3.0.0" />
+    <plugin name="cordova-plugin-statusbar" spec="^4.0.0" />
+    <plugin name="cordova-plugin-wallpaper" spec="^0.1.1" />
+    <plugin name="cordova-plugin-local-notification" spec="^1.2.3" />
+    <plugin name="cordova-plugin-adhan-alarm" spec="./native-plugins/cordova-plugin-adhan-alarm" />
+    <platform name="android">
+        <preference name="AndroidWindowSplashScreenBackground" value="#06251c" />
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="www/img/logo.png" />
+        <icon src="www/img/logo.png" />
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
+        <config-file parent="/manifest" target="app/src/main/AndroidManifest.xml">
+            <uses-permission android:name="android.permission.VIBRATE" />
+            <uses-permission android:name="android.permission.SET_WALLPAPER" />
+            <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <uses-permission android:maxSdkVersion="32" android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+            <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+            <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+            <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />
+            <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
+        </config-file>
+    </platform>
+</widget>

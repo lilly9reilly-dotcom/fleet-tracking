@@ -1,0 +1,11 @@
+{
+  "name": "cordova-plugin-adhan-alarm",
+  "version": "1.0.0",
+  "description": "Exact AlarmManager adhan alarms for الكوثر",
+  "cordova": {
+    "id": "cordova-plugin-adhan-alarm",
+    "platforms": ["android"]
+  },
+  "keywords": ["ecosystem:cordova", "cordova-android", "adhan", "alarm"],
+  "license": "Apache-2.0"
+}
