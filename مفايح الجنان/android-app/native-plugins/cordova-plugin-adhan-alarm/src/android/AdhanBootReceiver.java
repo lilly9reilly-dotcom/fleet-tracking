@@ -10,6 +10,7 @@ public class AdhanBootReceiver extends BroadcastReceiver {
         if (intent == null || intent.getAction() == null) return;
         String a = intent.getAction();
         if (Intent.ACTION_BOOT_COMPLETED.equals(a)
+                || Intent.ACTION_LOCKED_BOOT_COMPLETED.equals(a)
                 || Intent.ACTION_MY_PACKAGE_REPLACED.equals(a)
                 || "android.intent.action.QUICKBOOT_POWERON".equals(a)
                 || "android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED".equals(a)) {

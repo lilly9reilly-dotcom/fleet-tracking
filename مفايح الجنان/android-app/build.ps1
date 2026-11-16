@@ -46,19 +46,38 @@ $m = [regex]::Replace($m, '(?m)^\s*<uses-feature android:name="android\.hardware
 if ($m -notmatch 'android\.hardware\.location\.gps') {
   $m = $m.Replace('</manifest>', "    <uses-feature android:name=`"android.hardware.location.gps`" android:required=`"false`" />`r`n</manifest>")
 }
-# Exact alarms: keep a single SCHEDULE_EXACT_ALARM (maxSdk 32) + USE_EXACT_ALARM
+# Exact alarms + full-screen adhan (no maxSdk limit on SCHEDULE_EXACT_ALARM)
 $m = [regex]::Replace($m, '(?m)^\s*<uses-permission[^>]*android\.permission\.SCHEDULE_EXACT_ALARM[^/]*/>\s*\r?\n?', '')
 $m = [regex]::Replace($m, '(?m)^\s*<uses-permission[^>]*android\.permission\.USE_EXACT_ALARM[^/]*/>\s*\r?\n?', '')
 $m = [regex]::Replace($m, '(?m)^\s*<uses-permission[^>]*android\.permission\.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS[^/]*/>\s*\r?\n?', '')
+$m = [regex]::Replace($m, '(?m)^\s*<uses-permission[^>]*android\.permission\.USE_FULL_SCREEN_INTENT[^/]*/>\s*\r?\n?', '')
+$m = [regex]::Replace($m, '(?m)^\s*<uses-permission[^>]*android\.permission\.TURN_SCREEN_ON[^/]*/>\s*\r?\n?', '')
 $permBlock = @"
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 "@
 if ($m -match '</manifest>') {
   $m = $m.Replace('</manifest>', $permBlock + "`r`n</manifest>")
 }
+# Ensure AdhanAlarmActivity is registered for lock-screen playback
+if ($m -notmatch 'AdhanAlarmActivity') {
+  $activity = '        <activity android:excludeFromRecents="true" android:exported="false" android:launchMode="singleInstance" android:name="com.mafatih.aljinan.adhan.AdhanAlarmActivity" android:showWhenLocked="true" android:taskAffinity="" android:theme="@android:style/Theme.DeviceDefault.NoActionBar" android:turnScreenOn="true" />'
+  $m = $m.Replace('<service android:exported="false" android:foregroundServiceType="mediaPlayback" android:name="com.mafatih.aljinan.adhan.AdhanPlaybackService" />', "<service android:exported=`"false`" android:foregroundServiceType=`"mediaPlayback`" android:name=`"com.mafatih.aljinan.adhan.AdhanPlaybackService`" />`r`n$activity")
+}
 [System.IO.File]::WriteAllText($manifest, $m, $utf8NoBom)
+
+# Keep native adhan plugin sources in sync with native-plugins/
+$natJava = Join-Path $root "native-plugins\cordova-plugin-adhan-alarm\src\android"
+$platJava = Join-Path $root "platforms\android\app\src\main\java\com\mafatih\aljinan\adhan"
+if (Test-Path -LiteralPath $natJava) {
+  New-Item -ItemType Directory -Force -Path $platJava | Out-Null
+  Get-ChildItem -LiteralPath $natJava -Filter '*.java' | ForEach-Object {
+    Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $platJava $_.Name) -Force
+  }
+}
 
 Set-Location -LiteralPath (Join-Path $root "platforms\android")
 .\gradlew.bat cdvBuildDebug

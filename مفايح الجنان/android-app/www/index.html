@@ -533,8 +533,16 @@ body.in-player .bottom-bar{display:block}body.in-player #scr-player{padding-bott
 <div class="panel" style="margin-top:16px">
 <div style="display:flex;align-items:center;gap:8px;color:var(--gold-txt);font-weight:800;font-size:14px;margin-bottom:10px"><svg class="ic s"><use href="#i-pin"/></svg> الموقع</div>
 <select class="sel" id="citySel"></select>
-<button type="button" class="danger-btn" data-action="locate" style="margin-top:10px"><svg class="ic s"><use href="#i-pin"/></svg> تحديد موقعي الحالي</button>
-<div id="locNote" style="font-size:11px;color:var(--txt-sub);margin-top:8px;line-height:1.8"></div>
+<button type="button" class="danger-btn" data-action="locate" style="margin-top:10px"><svg class="ic s"><use href="#i-pin"/></svg> إعادة تحديد المحافظة عبر GPS</button>
+<div id="locNote" style="font-size:11px;color:var(--txt-sub);margin-top:8px;line-height:1.8">يُحدَّد موقعك مرة عبر GPS ويُثبَّت على أقرب محافظة. لن يتغير حتى تختار محافظة أخرى أو تضغط «إعادة تحديد».</div>
+<div class="switch-row" style="margin-top:12px">
+<span class="sw-label">تثبيت المحافظة<span class="sw-sub">عند التفعيل لا يغيّر GPS المحافظة تلقائياً</span></span>
+<label class="switch"><input type="checkbox" id="cityLockSw"><span class="slider"></span></label>
+</div>
+<div class="switch-row">
+<span class="sw-label">تنبيهات المناسبات والأدعية<span class="sw-sub">إشعار يومي على الشاشة للمناسبات الشيعية ودعاء اليوم</span></span>
+<label class="switch"><input type="checkbox" id="occasionSw"><span class="slider"></span></label>
+</div>
 </div>
 <div class="panel" style="margin-top:14px;text-align:center">
 <div style="color:var(--gold-txt);font-weight:800;font-size:13px">الصلاة القادمة: <span id="snpName"></span></div>
@@ -549,9 +557,9 @@ body.in-player .bottom-bar{display:block}body.in-player #scr-player{padding-bott
 <div id="ptList"></div>
 <div class="panel" style="margin-top:14px">
 <div style="display:flex;align-items:center;gap:8px;color:var(--gold-txt);font-weight:800;font-size:14px;margin-bottom:6px"><svg class="ic s"><use href="#i-clock"/></svg> تعديل دقائق (محلي)</div>
-<div style="font-size:11px;color:var(--txt-sub);line-height:1.8;margin-bottom:4px">اضبط كل صلاة بدقائق (±) لمطابقة أذان بلدك — يُحفظ على الجهاز فقط.</div>
+<div style="font-size:11px;color:var(--txt-sub);line-height:1.8;margin-bottom:4px">الافتراضي جعفري صرف بدون أي تعديل. استخدم الحقول فقط إن أردت مطابقة أذان محلي يدوياً.</div>
 <div class="pt-adj-grid" id="ptAdjGrid"></div>
-<button type="button" class="danger-btn" id="ptAdjReset" style="margin-top:10px">إعادة الافتراضي (مغرب +٢ د)</button>
+<button type="button" class="danger-btn" id="ptAdjReset" style="margin-top:10px">إعادة الافتراضي (بدون زيادة ولا نقصان)</button>
 </div>
 <div class="panel" style="margin-top:14px">
 <div style="display:flex;align-items:center;gap:8px;color:var(--gold-txt);font-weight:800;font-size:14px;margin-bottom:6px"><svg class="ic s"><use href="#i-bell"/></svg> منبّه الأذان</div>
@@ -595,14 +603,14 @@ body.in-player .bottom-bar{display:block}body.in-player #scr-player{padding-bott
 <span class="sw-label">تنبيه صلاة الليل (الثلث الأخير)<span class="sw-sub">اختياري — منفصل عن الخمس؛ تنبيه عند دخول وقتها</span></span>
 <label class="switch"><input type="checkbox" id="laylAlertSw"><span class="slider"></span></label>
 </div>
-<div class="gold-note" id="alertPermNote" style="margin-top:10px;margin-bottom:0">ليعمل الأذان والتطبيق مغلق تماماً امنح: ١) إذن الإشعارات ٢) التنبيهات الدقيقة (Exact alarms) ٣) بدون تحسين البطارية / السماح بالعمل في الخلفية. بعض أجهزة Xiaomi وHuawei وSamsung وOppO تقتل المنبّهات إن لم يُستثنَ التطبيق يدوياً من «تقييد البطارية / الإقلاع الذاتي».</div>
+<div class="gold-note" id="alertPermNote" style="margin-top:10px;margin-bottom:0">بعد التحديث: الأذان يعمل عبر AlarmManager الأصلي حتى والتطبيق مغلق أو مقفول الشاشة. امنح مرة واحدة: ١) الإشعارات ٢) التنبيهات الدقيقة ٣) إلغاء تحسين البطارية. على Xiaomi/Huawei/Samsung فعّل أيضاً «الإقلاع الذاتي» و«العمل في الخلفية» للكوثر.</div>
 <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
 <button type="button" class="danger-btn" id="btnNotifPerms" style="margin-top:0">طلب أذونات المنبّه</button>
 <button type="button" class="danger-btn" id="btnExactAlarm" style="margin-top:0">فتح إعداد التنبيهات الدقيقة</button>
 <button type="button" class="danger-btn" id="btnBatteryOpt" style="margin-top:0">إلغاء تحسين البطارية</button>
 </div>
 </div>
-<div class="gold-note" id="ptMethodNote">حساب جعفري (جامعة طهران) — فجر ١٧٫٧° · مغرب ٤٫٥° · عشاء ١٤° · عصر بظلٍّ واحد. + احتياط مغرب افتراضي دقيقتان. التوقيت حسب منطقة المدينة (مثل Asia/Baghdad). يُستحب الجمع بين الظهرين والعشاءين.</div>
+<div class="gold-note" id="ptMethodNote">حساب جعفري صرف (شيعة إثنا عشرية) — فجر ١٦° · مغرب ٤° تحت الأفق · عشاء ١٤° · عصر بظلٍّ واحد. بدون أي زيادة أو نقصان. التوقيت حسب إحداثيات GPS/المدينة. يُستحب الجمع بين الظهرين والعشاءين.</div>
 </div>
 </section>
 <section id="scr-layl" class="screen">
@@ -672,7 +680,7 @@ body.in-player .bottom-bar{display:block}body.in-player #scr-player{padding-bott
 <button type="button" class="danger-btn" data-action="locate"><svg class="ic s"><use href="#i-pin"/></svg> تحديث موقعي للقبلة</button>
 <button type="button" class="danger-btn" id="btnDemo"><svg class="ic s"><use href="#i-compass"/></svg> وضع التجربة (بدون حساس)</button>
 </div>
-<div class="gold-note">١) أمسك الجوال أفقياً ووجّه أعلاه نحو الاتجاه. ٢) عايِر البوصلة بحركة رقم ٨ بعيداً عن المعادن والمغناطيس. ٣) عندما تتوسط الكعبة المؤشر الذهبي تظهر «أنت باتجاه القبلة ✓». الدقة تعتمد على جودة مغناطيس الجهاز.</div>
+<div class="gold-note">عند فتح التطبيق يُفعَّل GPS تلقائياً لتثبيت إحداثياتك الحقيقية ثم تُحسب القبلة منها. ١) أمسك الجوال أفقياً. ٢) عايِر البوصلة بحركة ٨ بعيداً عن المعادن. ٣) عندما تتوسط الكعبة المؤشر الذهبي تظهر «أنت باتجاه القبلة ✓».</div>
 </div>
 </section>
 <section id="scr-events" class="screen">
@@ -756,8 +764,8 @@ body.in-player .bottom-bar{display:block}body.in-player #scr-player{padding-bott
 </div>
 </div>
 <div id="toast" role="status"></div>
-<script src="js/media-manifest.js"></script>
 <script src="cordova.js"></script>
+<script src="js/media-manifest.js"></script>
 <script>
 (function(){
 'use strict';
@@ -852,25 +860,84 @@ var QURAN=[
 ];
 var HIJRI_MONTHS=['محرم الحرام','صفر','ربيع الأول','ربيع الثاني','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
 var EVENTS=[
-{m:1,d:1,t:'بداية شهر الحزن',s:'استهلال عاشوراء'},{m:1,d:10,t:'عاشوراء الحسين (ع)',s:'استشهاد سيد الشهداء في كربلاء'},
-{m:2,d:20,t:'أربعينية الإمام الحسين (ع)',s:'زيارة الأربعين'},{m:2,d:28,t:'رحيل النبي الأكرم (ص)',s:'وفاة رسول الله (ص)'},
-{m:3,d:8,t:'شهادة الإمام الحسن العسكري (ع)',s:'الإمام الحادي عشر'},{m:3,d:9,t:'بدء إمامة الإمام المهدي (عج)',s:''},
-{m:7,d:13,t:'ولادة الإمام علي (ع)',s:'في جوف الكعبة'},{m:7,d:25,t:'شهادة الإمام الكاظم (ع)',s:'الإمام السابع'},
-{m:7,d:27,t:'المبعث النبوي الشريف',s:''},{m:8,d:3,t:'ولادة الإمام الحسين (ع)',s:''},
-{m:8,d:4,t:'ولادة أبي الفضل العباس (ع)',s:''},{m:8,d:5,t:'ولادة الإمام السجاد (ع)',s:''},
-{m:8,d:15,t:'النصف من شعبان',s:'ولادة الإمام المهدي (عج)'},{m:9,d:19,t:'جرح الإمام علي (ع)',s:''},
-{m:9,d:21,t:'شهادة الإمام علي (ع)',s:''},{m:10,d:1,t:'عيد الفطر المبارك',s:''},
-{m:10,d:25,t:'شهادة الإمام الصادق (ع)',s:''},{m:11,d:29,t:'شهادة الإمام الجواد (ع)',s:''},
-{m:12,d:10,t:'عيد الأضحى المبارك',s:''},{m:12,d:18,t:'عيد الغدير الأغر',s:'إعلان ولاية أمير المؤمنين (ع)'}
+{m:1,d:1,t:'بداية شهر محرم الحرام',s:'استهلال أيام الحزن والعزاء'},
+{m:1,d:2,t:'ورود الإمام الحسين (ع) إلى كربلاء',s:''},
+{m:1,d:7,t:'منع الماء عن معسكر الحسين (ع)',s:''},
+{m:1,d:9,t:'ليلة عاشوراء',s:'ليلة الوصال والاستعداد للشهادة'},
+{m:1,d:10,t:'عاشوراء الحسين (ع)',s:'استشهاد سيد الشهداء وأهل بيته في كربلاء'},
+{m:1,d:11,t:'سبي حرم الإمام الحسين (ع)',s:''},
+{m:1,d:12,t:'دفن أجساد الشهداء',s:''},
+{m:2,d:20,t:'أربعينية الإمام الحسين (ع)',s:'زيارة الأربعين المليونية'},
+{m:2,d:28,t:'رحيل النبي الأكرم (ص)',s:'وفاة رسول الله (ص) وشهادة الإمام الحسن (ع) على رواية'},
+{m:3,d:8,t:'شهادة الإمام الحسن العسكري (ع)',s:'الإمام الحادي عشر'},
+{m:3,d:9,t:'بدء إمامة الإمام المهدي (عج)',s:'يوم تنصيب الإمام المنتظر'},
+{m:3,d:17,t:'المولد النبوي الشريف',s:'على رواية ١٧ ربيع الأول'},
+{m:4,d:8,t:'ولادة الإمام الحسن (ع)',s:''},
+{m:4,d:10,t:'وفاة السيدة فاطمة الكبرى',s:'على بعض الروايات'},
+{m:5,d:5,t:'ولادة السيدة زينب (ع)',s:''},
+{m:5,d:13,t:'وفاة السيدة زينب (ع)',s:'على بعض الروايات'},
+{m:6,d:3,t:'شهادة السيدة فاطمة الزهراء (ع)',s:'على رواية ٧٥ يوماً بعد النبي'},
+{m:6,d:20,t:'ولادة السيدة فاطمة الزهراء (ع)',s:''},
+{m:7,d:1,t:'ولادة الإمام الباقر (ع)',s:''},
+{m:7,d:13,t:'ولادة أمير المؤمنين علي (ع)',s:'في جوف الكعبة المشرفة'},
+{m:7,d:15,t:'وفاة السيدة زينب (ع)',s:'على رواية أخرى'},
+{m:7,d:25,t:'شهادة الإمام موسى الكاظم (ع)',s:'الإمام السابع'},
+{m:7,d:27,t:'المبعث النبوي الشريف',s:'بعثة النبي (ص)'},
+{m:8,d:3,t:'ولادة الإمام الحسين (ع)',s:''},
+{m:8,d:4,t:'ولادة أبي الفضل العباس (ع)',s:'قمر بني هاشم'},
+{m:8,d:5,t:'ولادة الإمام السجاد (ع)',s:''},
+{m:8,d:11,t:'ولادة الإمام الرضا (ع)',s:'على بعض الروايات'},
+{m:8,d:15,t:'النصف من شعبان',s:'ولادة الإمام المهدي المنتظر (عج)'},
+{m:9,d:10,t:'وفاة السيدة خديجة (ع)',s:''},
+{m:9,d:15,t:'ولادة الإمام الحسن (ع)',s:'على رواية أخرى'},
+{m:9,d:19,t:'ضربة أمير المؤمنين (ع)',s:'ليلة ضربته في المحراب'},
+{m:9,d:21,t:'شهادة أمير المؤمنين علي (ع)',s:'في مسجد الكوفة'},
+{m:10,d:1,t:'عيد الفطر المبارك',s:''},
+{m:10,d:8,t:'تاسوعاء / شهادة مسلم بن عقيل',s:'على بعض النقل لشوال'},
+{m:10,d:25,t:'شهادة الإمام جعفر الصادق (ع)',s:'الإمام السادس'},
+{m:11,d:1,t:'ولادة الإمام الرضا (ع)',s:'على المشهور'},
+{m:11,d:11,t:'ولادة الإمام الرضا (ع)',s:'رواية أخرى'},
+{m:11,d:29,t:'شهادة الإمام محمد الجواد (ع)',s:'الإمام التاسع'},
+{m:12,d:1,t:'زواج النورين',s:'زواج علي وفاطمة (ع)'},
+{m:12,d:7,t:'شهادة الإمام الباقر (ع)',s:'على بعض الروايات'},
+{m:12,d:9,t:'يوم عرفة',s:'يُستحب فيه دعاء عرفة'},
+{m:12,d:10,t:'عيد الأضحى المبارك',s:''},
+{m:12,d:15,t:'ولادة الإمام الهادي (ع)',s:''},
+{m:12,d:18,t:'عيد الغدير الأغر',s:'إعلان ولاية أمير المؤمنين (ع) في غدير خم'},
+{m:12,d:24,t:'يوم المباهلة',s:'مباهلة النبي (ص) لنصارى نجران'},
+{m:12,d:25,t:'نزول سورة هل أتى',s:'في شأن أهل البيت (ع)'}
+];
+var WEEK_DUA_HINTS=[
+{dow:0,t:'دعاء يوم الأحد',s:'يُستحب اليوم قراءة دعاء يوم الأحد'},
+{dow:1,t:'دعاء يوم الاثنين',s:'يُستحب اليوم قراءة دعاء يوم الاثنين'},
+{dow:2,t:'دعاء يوم الثلاثاء',s:'يُستحب اليوم قراءة دعاء يوم الثلاثاء'},
+{dow:3,t:'دعاء يوم الأربعاء',s:'يُستحب اليوم قراءة دعاء يوم الأربعاء'},
+{dow:4,t:'دعاء يوم الخميس',s:'يُستحب اليوم قراءة دعاء يوم الخميس وزيارة الحسين (ع)'},
+{dow:5,t:'دعاء يوم الجمعة',s:'يُستحب دعاء يوم الجمعة ودعاء الندبة صباحاً'},
+{dow:6,t:'دعاء يوم السبت',s:'يُستحب اليوم قراءة دعاء يوم السبت'}
 ];
 var NAMES=['الرَّحْمَن','الرَّحِيم','الْمَلِك','الْقُدُّوس','السَّلَام','الْمُؤْمِن','الْمُهَيْمِن','الْعَزِيز','الْجَبَّار','الْمُتَكَبِّر','الْخَالِق','الْبَارِئ','الْمُصَوِّر','الْغَفَّار','الْقَهَّار','الْوَهَّاب','الرَّزَّاق','الْفَتَّاح','الْعَلِيم','الْقَابِض','الْبَاسِط','الْخَافِض','الرَّافِع','الْمُعِزّ','الْمُذِلّ','السَّمِيع','الْبَصِير','الْحَكَم','الْعَدْل','اللَّطِيف','الْخَبِير','الْحَلِيم','الْعَظِيم','الْغَفُور','الشَّكُور','الْعَلِيّ','الْكَبِير','الْحَفِيظ','الْمُقِيت','الْحَسِيب','الْجَلِيل','الْكَرِيم','الرَّقِيب','الْمُجِيب','الْوَاسِع','الْحَكِيم','الْوَدُود','الْمَجِيد','الْبَاعِث','الشَّهِيد','الْحَقّ','الْوَكِيل','الْقَوِيّ','الْمَتِين','الْوَلِيّ','الْحَمِيد','الْمُحْصِي','الْمُبْدِئ','الْمُعِيد','الْمُحْيِي','الْمُمِيت','الْحَيّ','الْقَيُّوم','الْوَاجِد','الْمَاجِد','الْوَاحِد','الْأَحَد','الصَّمَد','الْقَادِر','الْمُقْتَدِر','الْمُقَدِّم','الْمُؤَخِّر','الْأَوَّل','الْآخِر','الظَّاهِر','الْبَاطِن','الْوَالِي','الْمُتَعَالِي','الْبَرّ','التَّوَّاب','الْمُنْتَقِم','الْعَفُوّ','الرَّؤُوف','مَالِك الْمُلْك','ذُو الْجَلَالِ وَالْإِكْرَام','الْمُقْسِط','الْجَامِع','الْغَنِيّ','الْمُغْنِي','الْمَانِع','الضَّارّ','النَّافِع','النُّور','الْهَادِي','الْبَدِيع','الْبَاقِي','الْوَارِث','الرَّشِيد','الصَّبُور'];
 var CITIES=[
 {n:'النجف الأشرف',lat:31.9956,lng:44.3147,iana:'Asia/Baghdad'},
 {n:'كربلاء المقدسة',lat:32.6160,lng:44.0240,iana:'Asia/Baghdad'},
+{n:'بغداد',lat:33.3152,lng:44.3661,iana:'Asia/Baghdad'},
 {n:'الكاظمية المقدسة',lat:33.3803,lng:44.3381,iana:'Asia/Baghdad'},
 {n:'سامراء المقدسة',lat:34.1959,lng:43.8730,iana:'Asia/Baghdad'},
-{n:'بغداد',lat:33.3152,lng:44.3661,iana:'Asia/Baghdad'},
 {n:'البصرة',lat:30.5081,lng:47.7835,iana:'Asia/Baghdad'},
+{n:'نينوى — الموصل',lat:36.3400,lng:43.1300,iana:'Asia/Baghdad'},
+{n:'أربيل',lat:36.1911,lng:44.0093,iana:'Asia/Baghdad'},
+{n:'السليمانية',lat:35.5610,lng:45.4330,iana:'Asia/Baghdad'},
+{n:'كركوك',lat:35.4681,lng:44.3922,iana:'Asia/Baghdad'},
+{n:'دهوك',lat:36.8670,lng:42.9870,iana:'Asia/Baghdad'},
+{n:'الأنبار — الرمادي',lat:33.4250,lng:43.3000,iana:'Asia/Baghdad'},
+{n:'ديالى — بعقوبة',lat:33.7500,lng:44.6500,iana:'Asia/Baghdad'},
+{n:'صلاح الدين — تكريت',lat:34.6000,lng:43.6800,iana:'Asia/Baghdad'},
+{n:'بابل — الحلة',lat:32.4833,lng:44.4333,iana:'Asia/Baghdad'},
+{n:'واسط — الكوت',lat:32.5050,lng:45.8200,iana:'Asia/Baghdad'},
+{n:'ميسان — العمارة',lat:31.8400,lng:47.1500,iana:'Asia/Baghdad'},
+{n:'ذي قار — الناصرية',lat:31.0500,lng:46.2600,iana:'Asia/Baghdad'},
+{n:'المثنى — السماوة',lat:31.3160,lng:45.2800,iana:'Asia/Baghdad'},
+{n:'القادسية — الديوانية',lat:31.9900,lng:44.9300,iana:'Asia/Baghdad'},
 {n:'قم المقدسة',lat:34.6416,lng:50.8746,iana:'Asia/Tehran'},
 {n:'مشهد المقدسة',lat:36.2605,lng:59.6168,iana:'Asia/Tehran'},
 {n:'طهران',lat:35.6892,lng:51.3890,iana:'Asia/Tehran'},
@@ -901,9 +968,11 @@ function toast(m){var t=document.getElementById('toast');if(!t)return;t.textCont
 var state;
 function defaults(){
 return {date:todayStr(),counts:{},fontSize:1,theme:'auto',sound:true,alerts:false,preAlert:false,laylAlert:false,
+occasionAlerts:true,cityLocked:false,
 salawatOpen:true,bg:'p1',snd:'chime',qDec:null,qDecManual:false,wtr:{ist:0,afw:0},selectedAdhan:'',
 alertPrayers:{fajr:true,dhuhr:true,asr:true,maghrib:true,isha:true},
-ptAdj:{fajr:0,dhuhr:0,asr:0,maghrib:2,isha:0},
+ptAdj:{fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0},
+ptExactV3:1,
 city:{n:'النجف الأشرف',lat:31.9956,lng:44.3147,iana:'Asia/Baghdad'},
 tasbih:{z:{p:0,c:0},f:{d:0,t:1,c:0}},
 stats:{days:{},totalTasbih:0},
@@ -928,11 +997,16 @@ try{
 var raw=localStorage.getItem(STORE_KEY);
 if(raw){var s=JSON.parse(raw),d=defaults();
 for(var k in s){if(d.hasOwnProperty(k))d[k]=s[k];}
-if(!d.ptAdj||typeof d.ptAdj!=='object')d.ptAdj={fajr:0,dhuhr:0,asr:0,maghrib:2,isha:0};
+if(!d.ptAdj||typeof d.ptAdj!=='object')d.ptAdj={fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0};
 ['fajr','dhuhr','asr','maghrib','isha'].forEach(function(k){
-if(typeof d.ptAdj[k]!=='number'||isNaN(d.ptAdj[k]))d.ptAdj[k]=(k==='maghrib'?2:0);
+if(typeof d.ptAdj[k]!=='number'||isNaN(d.ptAdj[k]))d.ptAdj[k]=0;
 d.ptAdj[k]=Math.max(-30,Math.min(30,Math.round(d.ptAdj[k])));
 });
+/* إزالة احتياط المغرب القديم (+٢) وكل الإزاحات الافتراضية — جعفري صرف */
+if(d.ptExactV3!==1){
+d.ptAdj={fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0};
+d.ptExactV3=1;
+}
 d.alertPrayers=normalizeAlertPrayers(d.alertPrayers);
 if(d.city&&typeof d.city==='object'){
 if(!d.city.iana)d.city.iana=guessIana(d.city);
@@ -1551,14 +1625,31 @@ function fixAngle(a){return ((a%360)+360)%360;}function fixHour(h){return ((h%24
 function julian(y,m,d){if(m<=2){y--;m+=12;}var A=Math.floor(y/100),B=2-A+Math.floor(A/4);
 return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5;}
 /*
- * Ja'fari — Institute of Geophysics, University of Tehran (Aladhan method 7)
- * Fajr 17.7°, Maghrib 4.5°, Isha 14°, Asr shadow factor 1
- * Matches Iranian/Iraqi Shia practice better than Leva 16° (which is ~10–12 min later).
- * Nojumi (Qom) uses ~18° Fajr / 4.5° Maghrib — within ~1 min of Tehran.
+ * مذهب جعفري (شيعة إثنا عشرية) — مطابق PrayTimes/Aladhan method 0:
+ * فجر ١٦° · مغرب ٤° تحت الأفق · عشاء ١٤° · عصر بظلٍّ واحد.
+ * بلا احتياط دقائق في الحساب الأساسي.
  */
-var JAFARI={fajr:17.7,maghrib:4.5,isha:14,riseSet:0.833,asrFactor:1};
+var JAFARI={fajr:16,maghrib:4,isha:14,riseSet:0.833,asrFactor:1};
 function guessIana(city){
-if(city&&city.iana)return city.iana;
+/* لموقع GPS: منطقة الجهاز الزمنية أدق من تخمين الاسم */
+if(city&&city.fromGps){
+try{
+var z=Intl.DateTimeFormat().resolvedOptions().timeZone;
+if(z)return z;
+}catch(e){}
+}
+if(city&&city.iana&&!city.fromGps)return city.iana;
+var lat=city&&typeof city.lat==='number'?city.lat:null;
+var lng=city&&typeof city.lng==='number'?city.lng:null;
+if(lat!==null&&lng!==null){
+if(lat>=29&&lat<=37.8&&lng>=38.5&&lng<=48.85)return 'Asia/Baghdad';
+if(lat>=24.5&&lat<=40&&lng>48.5&&lng<63.8)return 'Asia/Tehran';
+if(lat>=33&&lat<=34.8&&lng>=35&&lng<=36.9)return 'Asia/Beirut';
+if(lat>=32.5&&lat<=37.5&&lng>=35.5&&lng<=42.5)return 'Asia/Damascus';
+if(lat>=28.4&&lat<=30.2&&lng>=46.4&&lng<=48.6)return 'Asia/Kuwait';
+if(lat>=25.7&&lat<=26.5&&lng>=50.3&&lng<=50.8)return 'Asia/Bahrain';
+if(lat>=24.5&&lat<=28.5&&lng>=46.5&&lng<=51.5)return 'Asia/Riyadh';
+}
 var n=(city&&city.n)||'';
 if(/طهران|قم|مشهد/.test(n))return 'Asia/Tehran';
 if(/بيروت/.test(n))return 'Asia/Beirut';
@@ -1570,7 +1661,7 @@ if(/نجف|كربلاء|كاظم|سامراء|بغداد|بصرة|موصل|حل�
 try{
 var local=Intl.DateTimeFormat().resolvedOptions().timeZone;
 if(local)return local;
-}catch(e){}
+}catch(e2){}
 return 'Asia/Baghdad';
 }
 function tzOffsetHours(date,iana){
@@ -1642,7 +1733,7 @@ return fixHour(ccw?base-portion:base+portion);
 function getPtAdj(k){
 var adj=(state&&state.ptAdj)||{};
 if(typeof adj[k]==='number'&&!isNaN(adj[k]))return adj[k];
-return k==='maghrib'?2:0;
+return 0;
 }
 function calcTimes(y,m,d,lat,lng,tz){
 var jdate=julian(y,m,d)-lng/(15*24);
@@ -1689,8 +1780,10 @@ var p=cityPartsInZone(new Date(),iana);
 return p.hour+p.minute/60+p.second/3600;
 }
 function fmtClock(t){
-var h=Math.floor(t),m=Math.round((t-h)*60);
-if(m===60){m=0;h=(h+1)%24;}
+if(typeof t!=='number'||isNaN(t))return '--:--';
+/* تقريب لأقرب دقيقة كما في جداول المواقيت الجعفرية القياسية */
+var total=Math.round(fixHour(t)*60);
+var h=Math.floor(total/60)%24,m=((total%60)+60)%60;
 var per=h<12?'ص':'م',h12=h%12||12;
 return ar(pad2(h12))+':'+ar(pad2(m))+' '+per;
 }
@@ -1721,19 +1814,19 @@ var bits=[];
 ['fajr','dhuhr','asr','maghrib','isha'].forEach(function(k){
 var v=getPtAdj(k);if(v)bits.push(PT_NAMES[k].replace('صلاة ','')+(v>0?' +':' ')+v+'د');
 });
-note.textContent='حساب جعفري (جامعة طهران — Aladhan 7): فجر ١٧٫٧° • مغرب ٤٫٥° تحت الأفق • عشاء ١٤° • عصر بظلٍّ واحد. التوقيت حسب منطقة المدينة.'+(bits.length?' تعديلاتك: '+bits.join('، ')+'.':'')+' يُستحب الجمع بين الظهرين والعشاءين.';
+note.textContent='حساب جعفري صرف (إثنا عشرية — Aladhan 0): فجر ١٦° • مغرب ٤° تحت الأفق • عشاء ١٤° • عصر بظلٍّ واحد. بدون زيادة ولا نقصان.'+(bits.length?' تعديلاتك اليدوية: '+bits.join('، ')+'.':'')+' يُستحب الجمع بين الظهرين والعشاءين.';
 }
 function buildPtAdjUI(){
 var grid=document.getElementById('ptAdjGrid');if(!grid||grid.dataset.built)return;
 grid.dataset.built='1';
-if(!state.ptAdj)state.ptAdj={fajr:0,dhuhr:0,asr:0,maghrib:2,isha:0};
+if(!state.ptAdj)state.ptAdj={fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0};
 PT_ADJ_KEYS.forEach(function(it){
 var item=el('label','pt-adj-item');
 var sp=document.createElement('span');sp.textContent=it.l;
 var inp=document.createElement('input');inp.type='number';inp.min='-30';inp.max='30';inp.step='1';
 inp.value=String(getPtAdj(it.k));inp.setAttribute('aria-label','تعديل '+it.l);
 inp.addEventListener('change',function(){
-var v=parseInt(this.value,10);if(isNaN(v))v=(it.k==='maghrib'?2:0);
+var v=parseInt(this.value,10);if(isNaN(v))v=0;
 v=Math.max(-30,Math.min(30,v));this.value=String(v);
 state.ptAdj[it.k]=v;save();timesCache={};
 renderTimes();schedulePrayerNotifications();toast('تم ضبط '+it.l+' ('+(v>=0?'+':'')+v+' د)');
@@ -1744,25 +1837,47 @@ var rst=document.getElementById('ptAdjReset');
 if(rst&&!rst.dataset.bound){
 rst.dataset.bound='1';
 rst.addEventListener('click',function(){
-state.ptAdj={fajr:0,dhuhr:0,asr:0,maghrib:2,isha:0};save();timesCache={};
+state.ptAdj={fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0};state.ptExactV3=1;save();timesCache={};
 grid.innerHTML='';grid.dataset.built='';
 buildPtAdjUI();renderTimes();schedulePrayerNotifications();
-toast('أُعيد الافتراضي: مغرب +٢ د');
+toast('أُعيد الافتراضي: جعفري صرف بدون تعديل');
 });
 }
 }
 function buildSalat(){
 var sel=document.getElementById('citySel');
 CITIES.forEach(function(c,i){var o=document.createElement('option');o.value=i;o.textContent=c.n;sel.appendChild(o);});
-var idx=0;for(var i=0;i<CITIES.length;i++){if(CITIES[i].n===state.city.n){idx=i;break;}}
-sel.value=String(idx);
-document.getElementById('locNote').textContent='المدينة: '+state.city.n+' — '+state.city.lat.toFixed(3)+'° ، '+state.city.lng.toFixed(3)+'°';
+syncCitySel();
+setLocNote(cityLockLabel()+' — '+state.city.lat.toFixed(3)+'° ، '+state.city.lng.toFixed(3)+'°');
 sel.addEventListener('change',function(){
-state.city=CITIES[parseInt(sel.value,10)];state.qDecManual=false;state.qDec=null;save();timesCache={};
+var c=CITIES[parseInt(sel.value,10)];
+state.city={n:c.n,lat:c.lat,lng:c.lng,iana:c.iana||guessIana(c),fromGps:false};
+state.cityLocked=true;
+state.qDecManual=false;state.qDec=null;save();timesCache={};
+var swL=document.getElementById('cityLockSw');if(swL)swL.checked=true;
 renderTimes();applyTheme();renderQibla();
-document.getElementById('locNote').textContent='المدينة: '+state.city.n+' — '+state.city.lat.toFixed(3)+'° ، '+state.city.lng.toFixed(3)+'°';
+setLocNote(cityLockLabel()+' — '+state.city.lat.toFixed(3)+'° ، '+state.city.lng.toFixed(3)+'°');
 schedulePrayerNotifications();
+toast('ثُبّتت المحافظة: '+c.n);
 });
+var lockSw=document.getElementById('cityLockSw');
+if(lockSw){
+lockSw.checked=!!state.cityLocked;
+lockSw.addEventListener('change',function(){
+setCityLocked(this.checked);
+setLocNote(cityLockLabel());
+toast(this.checked?'المحافظة مثبتة ✓':'يمكنك الآن إعادة تحديد المحافظة عبر GPS');
+});
+}
+var occSw=document.getElementById('occasionSw');
+if(occSw){
+occSw.checked=state.occasionAlerts!==false;
+occSw.addEventListener('change',function(){
+state.occasionAlerts=this.checked;save();
+schedulePrayerNotifications();
+toast(this.checked?'تنبيهات المناسبات مفعّلة ✓':'أُوقفت تنبيهات المناسبات');
+});
+}
 document.getElementById('alertSw').checked=!!state.alerts;
 document.getElementById('soundSw').checked=state.sound!==false;
 wireAlertPrayersUI();
@@ -1778,7 +1893,7 @@ requestNativeAdhanPermissions();
 });
 toast('تم تفعيل منبّه الأذان ✓');
 }else{
-cancelPrayerNotifications();
+schedulePrayerNotifications();
 toast('تم إيقاف منبّه الأذان');
 }
 });
@@ -1831,19 +1946,187 @@ toast('منبّه '+ar(n)+' من ٥ صلوات');
 });
 });
 }
-function locateMe(){
-if(!navigator.geolocation){toast('المتصفح لا يدعم تحديد الموقع');return;}
-toast('جارٍ تحديد الموقع…');
-navigator.geolocation.getCurrentPosition(function(pos){
-var city={n:'موقعي الحالي',lat:pos.coords.latitude,lng:pos.coords.longitude};
-city.iana=guessIana(city);
-state.city=city;save();timesCache={};
+
+function nearestCity(lat,lng){
+var best=null,bd=Infinity,i,c,d;
+for(i=0;i<CITIES.length;i++){
+c=CITIES[i];
+d=(c.lat-lat)*(c.lat-lat)+(c.lng-lng)*(c.lng-lng);
+if(d<bd){bd=d;best=c;}
+}
+return best?{n:best.n,lat:best.lat,lng:best.lng,iana:best.iana||guessIana(best)}:null;
+}
+function syncCitySel(){
+var sel=document.getElementById('citySel');if(!sel||!state.city)return;
+var idx=-1,i;
+for(i=0;i<CITIES.length;i++){if(CITIES[i].n===state.city.n){idx=i;break;}}
+if(idx>=0)sel.value=String(idx);
+}
+function setCityLocked(on){
+state.cityLocked=!!on;save();
+var sw=document.getElementById('cityLockSw');if(sw)sw.checked=!!state.cityLocked;
+}
+function cityLockLabel(){
+if(!state.city)return '';
+return state.cityLocked?('مثبّتة: '+state.city.n+' — لن تتغير تلقائياً'):('غير مثبّتة — سيتم ضبطها من GPS ثم تُثبَّت');
+}
+/* ═══════════ GPS إجباري حتى اكتمال التحديد الدقيق ═══════════ */
+var GEO={watchId:null,bestPos:null,bestAcc:Infinity,startedAt:0,settleTimer:null,autoTried:false,busy:false,keepWatch:true,locked:false,requiredAcc:35,mandatory:true};
+function geoHighOpts(){
+return {enableHighAccuracy:true,timeout:90000,maximumAge:0};
+}
+function stopGpsWatch(){
+if(GEO.watchId!==null&&navigator.geolocation){
+try{navigator.geolocation.clearWatch(GEO.watchId);}catch(e){}
+}
+GEO.watchId=null;
+if(GEO.settleTimer){clearTimeout(GEO.settleTimer);GEO.settleTimer=null;}
+}
+function setLocNote(msg){
+var elN=document.getElementById('locNote');
+if(elN)elN.textContent=msg||'';
+}
+function gpsStatusLine(lat,lng,acc){
+var accTxt=acc<1000?('±'+Math.round(acc)+' م'):'دقة منخفضة';
+var quality=acc<=25?'ممتازة ✓':acc<=GEO.requiredAcc?'جيدة ✓':acc<=80?'متوسطة — مستمر':('جارية — مطلوب ≤'+GEO.requiredAcc+'م');
+var lock=GEO.locked?' — مثبت':' — GPS إجباري يعمل…';
+return 'GPS'+lock+': '+lat.toFixed(6)+' ، '+lng.toFixed(6)+' — الدقة '+accTxt+' ('+quality+')';
+}
+function applyGpsFix(pos,opts){
+opts=opts||{};
+if(!pos||!pos.coords)return false;
+var c=pos.coords;
+var acc=typeof c.accuracy==='number'&&isFinite(c.accuracy)?c.accuracy:9999;
+if(!opts.force&&acc>5000)return false;
+var lat=c.latitude,lng=c.longitude;
+if(!isFinite(lat)||!isFinite(lng))return false;
+/* المحافظة مثبتة يدوياً: لا نغيّرها من GPS */
+if(state.cityLocked&&!opts.forceUnlock){
+GEO.locked=acc<=GEO.requiredAcc;
+setLocNote(cityLockLabel()+' · GPS ±'+Math.round(acc)+' م (لا يغيّر المحافظة)');
+var qLocked=document.getElementById('qbCity');
+if(qLocked)qLocked.textContent='من '+state.city.n+' نحو الكعبة';
+return true;
+}
+var nearest=nearestCity(lat,lng);
+var city=nearest?{
+n:nearest.n,
+lat:nearest.lat,
+lng:nearest.lng,
+iana:nearest.iana||guessIana(nearest),
+accuracy:acc,
+fromGps:true,
+gpsLat:lat,
+gpsLng:lng,
+ts:Date.now()
+}:{n:'موقعي الحالي (GPS)',lat:lat,lng:lng,accuracy:acc,fromGps:true,ts:Date.now(),iana:guessIana({lat:lat,lng:lng,fromGps:true})};
+var prev=state.city||{};
+var moved=!prev.n||prev.n!==city.n||Math.abs((prev.lat||0)-city.lat)>0.01||Math.abs((prev.lng||0)-city.lng)>0.01;
+state.city=city;
+/* أول تثبيت ناجح من GPS يقفل المحافظة حتى لا تتبدل عند كل فتح */
+if(!state.cityLocked)state.cityLocked=true;
+save();timesCache={};
 state.qDecManual=false;state.qDec=null;
-renderTimes();applyTheme();renderQibla();
-document.getElementById('locNote').textContent='الإحداثيات: '+state.city.lat.toFixed(4)+' ، '+state.city.lng.toFixed(4)+' — '+city.iana;
-schedulePrayerNotifications();
-toast('تم تحديد موقعك ✓');
-},function(){toast('تعذّر الوصول للموقع — اختر مدينة من القائمة');},{timeout:12000,enableHighAccuracy:true,maximumAge:30000});
+try{renderTimes();applyTheme();renderQibla();renderLayl();syncCitySel();}catch(e){}
+var sw=document.getElementById('cityLockSw');if(sw)sw.checked=!!state.cityLocked;
+setLocNote(cityLockLabel()+' · رُصد GPS '+lat.toFixed(5)+','+lng.toFixed(5)+' (±'+Math.round(acc)+' م)');
+try{schedulePrayerNotifications();}catch(e2){}
+if(moved&&!opts.silent){
+if(acc<=GEO.requiredAcc)toast('تم تثبيت محافظتك: '+city.n+' ✓');
+else toast('جارٍ تحديد المحافظة عبر GPS…');
+}
+var qbc=document.getElementById('qbCity');
+if(qbc)qbc.textContent='من '+city.n+' نحو الكعبة';
+return true;
+}
+function considerGpsSample(pos){
+if(!pos||!pos.coords)return;
+var acc=typeof pos.coords.accuracy==='number'?pos.coords.accuracy:9999;
+if(GEO.bestPos&&acc>GEO.bestAcc+25&&acc>100)return;
+if(acc<GEO.bestAcc||!GEO.bestPos){
+GEO.bestAcc=acc;
+GEO.bestPos=pos;
+applyGpsFix(pos,{silent:true,forceUnlock:!!GEO.forceUnlock});
+}
+if(GEO.bestAcc<=GEO.requiredAcc){
+GEO.locked=true;
+settleGps(false,{silent:false});
+}else{
+setLocNote('GPS إجباري يعمل حتى اكتمال التحديد… أفضل دقة الآن ±'+Math.round(GEO.bestAcc)+' م (المطلوب ≤'+GEO.requiredAcc+' م). ابقَ في مكان مفتوح السماء.');
+}
+}
+function settleGps(force,opts){
+opts=opts||{};
+if(!GEO.bestPos){
+if(force){
+setLocNote('GPS إجباري ما زال يحاول… اسمح بالموقع الدقيق وافتح السماء. أو اختر مدينة مؤقتاً من القائمة.');
+if(!opts.silent)toast('ما زلنا ننتظر GPS…');
+GEO.busy=true;
+GEO.settleTimer=setTimeout(function(){
+try{navigator.geolocation.getCurrentPosition(function(p){considerGpsSample(p);settleGps(true,{silent:true});},function(){settleGps(true,{silent:true});},geoHighOpts());}catch(e){}
+},15000);
+}
+return;
+}
+applyGpsFix(GEO.bestPos,{force:true,silent:!!opts.silent,forceUnlock:!!GEO.forceUnlock});
+GEO.forceUnlock=false;
+if(GEO.bestAcc<=GEO.requiredAcc){
+GEO.locked=true;
+GEO.busy=false;
+if(!opts.silent)toast('اكتمل تحديد المحافظة ✓');
+if(GEO.bestAcc<=20)stopGpsWatch();
+else GEO.settleTimer=setTimeout(function(){if(GEO.bestAcc<=GEO.requiredAcc)stopGpsWatch();},12000);
+return;
+}
+GEO.busy=true;
+GEO.locked=false;
+setLocNote('GPS إجباري مستمر… ±'+Math.round(GEO.bestAcc)+' م الآن — ننتظر ≤'+GEO.requiredAcc+' م');
+if(force)GEO.settleTimer=setTimeout(function(){settleGps(true,{silent:true});},20000);
+}
+function startPreciseLocation(opts){
+opts=opts||{};
+if(!navigator.geolocation){toast('الجهاز لا يدعم تحديد الموقع');return;}
+GEO.keepWatch=true;GEO.mandatory=true;GEO.busy=true;GEO.locked=false;
+GEO.forceUnlock=!!opts.forceUnlock;
+GEO.bestPos=null;GEO.bestAcc=Infinity;GEO.startedAt=Date.now();
+stopGpsWatch();
+toast(opts.silent?'GPS يعمل تلقائياً…':'جارٍ تشغيل GPS لتحديد المحافظة…');
+setLocNote('تشغيل GPS… لتحديد محافظتك بدقة (≤'+GEO.requiredAcc+' م). ثم تُثبَّت ولن تتغير وحدها.');
+try{
+GEO.watchId=navigator.geolocation.watchPosition(
+function(pos){considerGpsSample(pos);},
+function(err){
+if(err&&err.code===1){
+GEO.busy=false;
+setLocNote('رُفض إذن الموقع — من إعدادات الهاتف: الكوثر → الموقع → دقيق');
+toast('يلزم السماح بالموقع الدقيق — GPS إجباري للتطبيق');
+}else{
+try{navigator.geolocation.getCurrentPosition(function(p){considerGpsSample(p);},function(){},geoHighOpts());}catch(e){}
+GEO.settleTimer=setTimeout(function(){settleGps(true,{silent:true});},12000);
+}
+},
+geoHighOpts()
+);
+}catch(e){GEO.busy=false;toast('تعذّر تشغيل GPS');return;}
+try{navigator.geolocation.getCurrentPosition(function(p){considerGpsSample(p);},function(){},geoHighOpts());}catch(e2){}
+GEO.settleTimer=setTimeout(function(){settleGps(true,{silent:!!opts.silent});},45000);
+}
+function locateMe(){
+/* إعادة تحديد صريحة من المستخدم — تسمح بتغيير المحافظة */
+state.cityLocked=false;save();
+var sw=document.getElementById('cityLockSw');if(sw)sw.checked=false;
+startPreciseLocation({silent:false,keepWatch:true,forceUnlock:true});
+}
+function autoStartGpsOnLaunch(){
+if(GEO.autoTried)return;
+GEO.autoTried=true;
+/* إن كانت المحافظة مثبتة لا نعيد اختيارها عند كل فتح */
+if(state.cityLocked){
+setLocNote(cityLockLabel());
+syncCitySel();
+return;
+}
+startPreciseLocation({silent:true,keepWatch:true,forceUnlock:true});
 }
 var audioCtx=null;
 function ensureAudio(){
@@ -1914,8 +2197,8 @@ return mediaUrl(getAdhanFolder(),file);
 }
 function getAdhanSoundPath(){
 var file=getSelectedAdhanFile();
-if(!file)return null;
-/* cordova-plugin-local-notification: www/... copies asset to FileProvider content:// for channel sound */
+/* مسار أصلّي لـ AlarmManager/MediaPlayer داخل الـ APK */
+if(!file)return 'www/audio/adhan/default.mp3';
 return 'www/'+getAdhanFolder()+'/'+file;
 }
 function stopAdhanAlert(){
@@ -2109,9 +2392,65 @@ if(!n)return;
 try{n.cancel(getAllNotifIds());}catch(e){try{n.cancelAll();}catch(e2){}}
 }
 function getAllNotifIds(){
-var ids=[],i;
-for(i=1;i<=6;i++){ids.push(9000+i);ids.push(9100+i);ids.push(9200+i);ids.push(9300+i);}
+var ids=[],di,i;
+/* 7 أيام × (أذان + تذكير مبكر) + صلاة الليل */
+for(di=0;di<7;di++){
+for(i=1;i<=6;i++){
+ids.push(9000+di*20+i);
+ids.push(9000+di*20+10+i);
+}
+}
+/* مناسبات وأدعية: 7000–7199 */
+for(i=7000;i<7200;i++)ids.push(i);
 return ids;
+}
+function hijriOf(date){
+try{
+var f=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'});
+var o={};f.formatToParts(date).forEach(function(p){o[p.type]=p.value;});
+return {d:parseInt(o.day,10),m:parseInt(o.month,10),y:parseInt(o.year,10)};
+}catch(e){return null;}
+}
+function eventsOnHijri(h){
+if(!h)return [];
+return EVENTS.filter(function(e){return e.m===h.m&&e.d===h.d;});
+}
+function weekDuaForDate(date){
+var dow=date.getDay();
+for(var i=0;i<WEEK_DUA_HINTS.length;i++){if(WEEK_DUA_HINTS[i].dow===dow)return WEEK_DUA_HINTS[i];}
+return null;
+}
+function buildOccasionAlarmItems(){
+if(state.occasionAlerts===false)return [];
+var now=new Date(),items=[],id=7000;
+function pushAt(day,hour,title,text,kind){
+var at=new Date(day.getFullYear(),day.getMonth(),day.getDate(),hour,0,0,0);
+if(at.getTime()<=now.getTime()+5000)return;
+items.push({id:id++,title:title,text:text,at:at.getTime(),soundAsset:'',playSound:false,kind:kind||'event'});
+}
+for(var di=0;di<14;di++){
+var day=new Date(now.getFullYear(),now.getMonth(),now.getDate()+di);
+var h=hijriOf(day);
+var evs=eventsOnHijri(h);
+var wd=weekDuaForDate(day);
+if(evs.length){
+evs.forEach(function(ev){
+var body=(ev.s?ev.s+' — ':'')+'في '+ar(ev.d)+' '+(typeof HIJRI_MONTHS!=='undefined'?HIJRI_MONTHS[ev.m-1]:'')+' · مذهب أهل البيت (ع)';
+pushAt(day,8,'مناسبة اليوم: '+ev.t,body,'event');
+/* تذكير مسائي خفيف لأيام العزاء الكبرى */
+if((ev.m===1&&ev.d>=1&&ev.d<=12)||(ev.m===2&&ev.d===20)||ev.t.indexOf('شهادة')>=0){
+pushAt(day,19,'تذكير مناسبتي: '+ev.t,'يُستحب إحياء هذه المناسبة بقراءة زيارة أو دعاء','event');
+}
+});
+}else if(wd){
+pushAt(day,8,'دعاء اليوم: '+wd.t,wd.s+' — من تبويب الوسائط في الكوثر','dua');
+}
+/* جمعة: تذكير الندبة */
+if(day.getDay()===5){
+pushAt(day,7,'صباح الجمعة — دعاء الندبة','يُستحب قراءة دعاء الندبة صبيحة الجمعة','dua');
+}
+}
+return items;
 }
 function channelIdForAdhan(){
 var f=getSelectedAdhanFile()||'default';
@@ -2122,10 +2461,11 @@ return 'adhan_ch_'+Math.abs(h)+(silent?'_mute':'');
 }
 function prayerKeyFromNotifId(id){
 var n=parseInt(id,10);
-if(isNaN(n))return null;
-var base=n>=9300?9300:n>=9200?9200:n>=9100?9100:n>=9000?9000:0;
-if(!base)return null;
-var idx=n-base;
+if(isNaN(n)||n<9000)return null;
+var di=Math.floor((n-9000)/20);
+var rem=(n-9000)%20;
+var isPre=rem>=11&&rem<=16;
+var idx=isPre?(rem-10):rem;
 if(idx>=1&&idx<=5)return ALERT_PRAYERS[idx-1];
 if(idx===6)return 'layl';
 return null;
@@ -2143,17 +2483,19 @@ id:id,
 title:title,
 text:text,
 at:at.getTime(),
-soundAsset:soundRel||'',
+soundAsset:soundRel||'www/audio/adhan/default.mp3',
 playSound:!silent&&kind==='adhan',
 kind:kind
 });
 }
 var day0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-var day1=new Date(day0.getTime()+86400000);
-[day0,day1].forEach(function(day,di){
+/* جدول ٧ أيام حتى يعمل الأذان والتطبيق مغلق لأيام دون فتحه */
+var days=[];
+for(var di=0;di<7;di++)days.push(new Date(day0.getTime()+di*86400000));
+days.forEach(function(day,di){
 var T=getTimes(day);
-var base=di===0?9000:9200;
-var preBase=di===0?9100:9300;
+var base=9000+di*20;
+var preBase=base+10;
 ALERT_PRAYERS.forEach(function(k,i){
 if(!isPrayerAlertOn(k))return;
 var at=floatToDate(day,T[k]);
@@ -2165,13 +2507,8 @@ pushItem(preBase+i+1,'تذكير: باقي ١٠ دقائق على '+label,'ال�
 }
 });
 if(state.laylAlert){
-var Lthird;
-if(di===0){
-Lthird=laylTimes().third;
-}else{
 var nightLen=(T.fajr+24-T.maghrib)%24;
-Lthird=(T.maghrib+nightLen*2/3)%24;
-}
+var Lthird=(T.maghrib+nightLen*2/3)%24;
 var laylAt=floatToDate(day,Lthird);
 if(Lthird<T.maghrib)laylAt=new Date(laylAt.getTime()+86400000);
 pushItem(base+6,'حان وقت صلاة الليل','الكوثر — الثلث الأخير من الليل',laylAt,'layl');
@@ -2180,25 +2517,26 @@ pushItem(base+6,'حان وقت صلاة الليل','الكوثر — الثلث
 return items;
 }
 function schedulePrayerNotifications(){
-if(!state.alerts){cancelPrayerNotifications();return;}
-var items=buildAdhanAlarmItems();
+var items=[];
+if(state.alerts)items=items.concat(buildAdhanAlarmItems());
+items=items.concat(buildOccasionAlarmItems());
 var a=adhanAlarmPlugin();
 if(a){
-/* مسار أصلي موثوق: AlarmManager + Foreground Service */
 try{
-var n=notifPlugin();
-if(n){try{n.cancel(getAllNotifIds());}catch(e){}}
+var n0=notifPlugin();
+if(n0){try{n0.cancel(getAllNotifIds());}catch(e){}}
+if(!items.length){try{a.cancelAll(function(){},function(){});}catch(e2){}return;}
 a.schedule(items,function(){notifPermGranted=true;},function(){});
 }catch(e){}
 return;
 }
-/* احتياط: الإشعارات المحلية إن لم يتوفر الملحق الأصلي */
 var n=notifPlugin();
 if(!n)return;
+cancelPrayerNotifications();
+if(!items.length)return;
 var soundPath=getAdhanSoundPath();
 var silent=state.sound===false||state.snd==='off';
 var channelId=channelIdForAdhan();
-var now=new Date();
 var legacy=[];
 items.forEach(function(it){
 var isAdhan=it.kind==='adhan';
@@ -2212,20 +2550,18 @@ wakeup:true,
 lockscreen:true,
 priority:2,
 vibrate:true,
-sound:silent?null:(isAdhan&&soundPath?soundPath:'default'),
+sound:silent||!isAdhan?null:(soundPath||'default'),
 androidAllowWhileIdle:true,
 androidAlarmType:'RTC_WAKEUP',
-androidChannelId:isAdhan?channelId:'adhan_soft_v2',
-androidChannelName:isAdhan?'منبّه الأذان — الكوثر':'تذكير الصلاة — الكوثر',
-androidChannelDescription:'تنبيهات مواقيت الصلاة حتى والتطبيق مغلق',
+androidChannelId:isAdhan?channelId:'alkawthar_events_v1',
+androidChannelName:isAdhan?'منبّه الأذان — الكوثر':'مناسبات وأدعية — الكوثر',
+androidChannelDescription:'تنبيهات المواقيت والمناسبات الشيعية',
 androidChannelImportance:'IMPORTANCE_HIGH',
 androidChannelEnableVibration:true,
 androidChannelEnableLights:true,
 androidChannelSoundUsage:isAdhan?4:5
 });
 });
-cancelPrayerNotifications();
-if(!legacy.length)return;
 try{
 n.schedule(legacy,function(){notifPermGranted=true;},function(){});
 }catch(e){
@@ -2260,12 +2596,16 @@ n.on('clear',function(){stopAdhanAlert();});
 n.on('cancel',function(){stopAdhanAlert();});
 }catch(e){}
 }
-if(state.alerts){
+if(state.alerts||state.occasionAlerts!==false){
 requestNotifPermission(function(granted){
 schedulePrayerNotifications();
+if(state.alerts){
 guideExactAlarmAndBattery(granted);
 requestNativeAdhanPermissions();
+}
 });
+}else{
+try{schedulePrayerNotifications();}catch(e){}
 }
 }
 function laylTimes(){
@@ -2342,19 +2682,21 @@ if(labEl)labEl.textContent=inWin?'المتبقي حتى الفجر — اغتن�
 }
 }
 /* ═══════════ بوصلة القبلة ═══════════ */
-var KAABA={lat:21.422487,lng:39.826206};
+var KAABA={lat:21.4224779,lng:39.8260389};
 var QB={trueBearing:0,targetHeading:null,displayHeading:0,headingAccuracy:null,source:'',
 compassActive:false,listenersAttached:false,cordovaWatchId:null,demoMode:false,rafId:null,
 ticksBuilt:false,decBound:false,demoBound:false,usingTrueHeading:false};
 var lastCityName=null;
-/* تقدير انحراف مغناطيسي تقريبي للعراق/المنطقة (≈WMM) — كافٍ ±٠٫٥° */
+/* تقدير انحراف مغناطيسي تقريبي (شبيه WMM) للعراق/الخليج/إيران */
 function estimateDeclination(lat,lng){
-var dec=4.2+(lat-32)*0.02-(lng-44)*0.05;
-if(lng>52)dec-=(lng-52)*0.07;
-if(lng<38)dec+=(38-lng)*0.04;
-if(lat>36)dec-=(lat-36)*0.03;
+var dec=5.1+(lat-33)*0.025-(lng-44.3)*0.055;
+if(lng>50)dec-=(lng-50)*0.06;
+if(lng<40)dec+=(40-lng)*0.045;
+if(lat>36)dec-=(lat-36)*0.035;
+if(lat<30)dec+=(30-lat)*0.02;
 return Math.round(Math.max(-12,Math.min(12,dec))*10)/10;
 }
+/* سمت القبلة: مسار الدائرة العظمى نحو الكعبة (شمال حقيقي) */
 function calcQibla(lat,lng){
 var phi1=dtr(lat),phi2=dtr(KAABA.lat),dL=dtr(KAABA.lng-lng);
 var y=Math.sin(dL)*Math.cos(phi2);
@@ -2443,13 +2785,12 @@ qSetAcc(isTrue?'اتجاه حقيقي من الحساس':'مغناطيسي مع 
 function handleOrient(e){
 if(QB.demoMode||QB.cordovaWatchId!==null)return;
 var heading=null,isTrue=false;
+/* iOS: webkitCompassHeading = درجات من الشمال الحقيقي باتجاه عقارب الساعة */
 if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null&&!isNaN(e.webkitCompassHeading)){
 heading=e.webkitCompassHeading;
 isTrue=true;
-}else if(e.absolute===true&&e.alpha!==null&&e.alpha!==undefined&&!isNaN(e.alpha)){
-heading=norm360(e.alpha-getScreenAngle());
-isTrue=true;
 }else if(e.alpha!==null&&e.alpha!==undefined&&!isNaN(e.alpha)){
+/* Android/WebView: alpha عكس عقارب الساعة من الشمال المغناطيسي غالباً */
 heading=norm360(360-e.alpha-getScreenAngle());
 isTrue=false;
 heading=norm360(heading+getDec());
@@ -2546,7 +2887,9 @@ else deltaTxt.textContent='القبلة على يسارك — أدر جهازك 
 function qiblaEnter(){
 updateQiblaStatic();
 buildTicks();
-attachCompassListeners();
+/* إن لم تُثبَّت المحافظة بعد: حدّدها؛ وإلا اكتفِ بالبوصلة */
+try{if(!state.cityLocked)startPreciseLocation({silent:true,keepWatch:true,forceUnlock:true});}catch(e){}
+startCompass();
 if(!QB.decBound){
 var decSlider=document.getElementById('qDec');
 if(decSlider){
@@ -2562,6 +2905,7 @@ if(demoBtn){demoBtn.addEventListener('click',function(){setDemo(!QB.demoMode);})
 }
 if(!QB.rafId)tickCompass();
 if(window.isSecureContext===false&&!window.cordova)qSetStatus('تنبيه: حساس البوصلة في المتصفح يتطلب HTTPS');
+else qSetStatus('GPS + بوصلة نشطان — أمسك الجهاز أفقياً وعايِر بحركة ٨');
 }
 function hijriToday(){
 try{
@@ -2987,6 +3331,8 @@ function bootExtras(){
 showBlessingCardThenSalawat();
 try{wireNotificationPlugin();}catch(e){}
 try{schedulePrayerNotifications();}catch(e){}
+/* تشغيل GPS تلقائياً فور الجاهزية لتثبيت الإحداثيات الحقيقية */
+try{autoStartGpsOnLaunch();}catch(e){}
 }
 /* ═══════════ التهيئة المحصّنة: المؤقّت أولاً ولا يتوقف أبداً ═══════════ */
 function init(){
@@ -3026,7 +3372,10 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden){che
 function(){
 if(window.cordova){
 document.addEventListener('deviceready',bootExtras,false);
-document.addEventListener('resume',function(){try{schedulePrayerNotifications();}catch(e){}},false);
+document.addEventListener('resume',function(){
+try{schedulePrayerNotifications();}catch(e){}
+try{startPreciseLocation({silent:true,keepWatch:true});}catch(e2){}
+},false);
 }else{
 setTimeout(bootExtras,300);
 }

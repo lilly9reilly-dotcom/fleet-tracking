@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-adhan-alarm"
-        version="1.0.0">
+        version="1.1.0">
     <name>AdhanAlarm</name>
     <description>Exact AlarmManager adhan alarms with audio playback when app is killed</description>
     <license>Apache-2.0</license>
@@ -30,9 +30,12 @@
             <uses-permission android:name="android.permission.VIBRATE" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-            <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+            <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
             <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+            <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
             <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+            <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
+            <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
@@ -45,6 +48,7 @@
                 android:enabled="true">
                 <intent-filter>
                     <action android:name="android.intent.action.BOOT_COMPLETED" />
+                    <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                     <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                     <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                     <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
@@ -54,6 +58,15 @@
                 android:name="com.mafatih.aljinan.adhan.AdhanPlaybackService"
                 android:exported="false"
                 android:foregroundServiceType="mediaPlayback" />
+            <activity
+                android:name="com.mafatih.aljinan.adhan.AdhanAlarmActivity"
+                android:exported="false"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance"
+                android:showWhenLocked="true"
+                android:turnScreenOn="true"
+                android:taskAffinity=""
+                android:theme="@android:style/Theme.DeviceDefault.NoActionBar" />
         </config-file>
 
         <source-file src="src/android/AdhanAlarmPlugin.java" target-dir="src/com/mafatih/aljinan/adhan" />
@@ -62,5 +75,6 @@
         <source-file src="src/android/AdhanAlarmReceiver.java" target-dir="src/com/mafatih/aljinan/adhan" />
         <source-file src="src/android/AdhanBootReceiver.java" target-dir="src/com/mafatih/aljinan/adhan" />
         <source-file src="src/android/AdhanPlaybackService.java" target-dir="src/com/mafatih/aljinan/adhan" />
+        <source-file src="src/android/AdhanAlarmActivity.java" target-dir="src/com/mafatih/aljinan/adhan" />
     </platform>
 </plugin>

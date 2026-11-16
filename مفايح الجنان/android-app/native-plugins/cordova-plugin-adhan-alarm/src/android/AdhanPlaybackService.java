@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -18,15 +20,19 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
+import java.io.IOException;
+
 public class AdhanPlaybackService extends Service {
     public static final String ACTION_PLAY = "com.mafatih.aljinan.adhan.PLAY";
     public static final String ACTION_STOP = "com.mafatih.aljinan.adhan.STOP";
-    public static final String CHANNEL_ALARM = "alkawthar_adhan_alarm_v1";
-    public static final String CHANNEL_SOFT = "alkawthar_adhan_soft_v1";
+    public static final String CHANNEL_ALARM = "alkawthar_adhan_alarm_v2";
+    public static final String CHANNEL_SOFT = "alkawthar_adhan_soft_v2";
     private static final int NOTIF_ID = 77001;
 
     private MediaPlayer player;
     private PowerManager.WakeLock wakeLock;
+    private AudioManager audioManager;
+    private AudioFocusRequest focusRequest;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -52,10 +58,10 @@ public class AdhanPlaybackService extends Service {
         String kind = intent.getStringExtra(AdhanAlarmScheduler.EXTRA_KIND);
         if (title == null || title.isEmpty()) title = "الكوثر — منبّه الأذان";
         if (text == null) text = "حان وقت الصلاة";
-        boolean soft = "pre".equals(kind) || "layl".equals(kind);
+        boolean soft = "pre".equals(kind) || "layl".equals(kind) || "event".equals(kind) || "dua".equals(kind);
 
         ensureChannels();
-        Notification notification = buildNotification(title, text, soft);
+        Notification notification = buildNotification(title, text, soft, intent);
         if (Build.VERSION.SDK_INT >= 29) {
             startForeground(NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
         } else {
@@ -63,15 +69,13 @@ public class AdhanPlaybackService extends Service {
         }
 
         acquireWakeLock();
+        requestAlarmFocus();
         if (play) {
             startAudio(sound);
         } else {
-            // Soft reminder: show notification briefly (system keeps it via channel)
-            // Keep service alive short then stop — notification stays until user clears if we post separately.
-            // For soft kinds we still show ongoing until stopped; auto-stop after short delay via completion-less path:
             new android.os.Handler(getMainLooper()).postDelayed(this::stopPlaybackAndSelf, 8000);
         }
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private void ensureChannels() {
@@ -102,34 +106,36 @@ public class AdhanPlaybackService extends Service {
         nm.createNotificationChannel(soft);
     }
 
-    private Notification buildNotification(String title, String text, boolean soft) {
-        Intent launch = getPackageManager().getLaunchIntentForPackage(getPackageName());
-        if (launch != null) {
-            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        }
+    private Notification buildNotification(String title, String text, boolean soft, Intent src) {
+        Intent full = new Intent(this, AdhanAlarmActivity.class);
+        full.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (src != null) full.putExtras(src);
+
         int piFlags = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             piFlags |= PendingIntent.FLAG_IMMUTABLE;
         }
-        PendingIntent contentPi = PendingIntent.getActivity(this, 0, launch != null ? launch : new Intent(), piFlags);
+        PendingIntent fullPi = PendingIntent.getActivity(this, 1, full, piFlags);
 
         Intent stopIntent = new Intent(this, AdhanAlarmReceiver.class);
         stopIntent.setAction(ACTION_STOP);
         PendingIntent stopPi = PendingIntent.getBroadcast(this, 99, stopIntent, piFlags);
 
-        return new NotificationCompat.Builder(this, soft ? CHANNEL_SOFT : CHANNEL_ALARM)
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, soft ? CHANNEL_SOFT : CHANNEL_ALARM)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(android.R.drawable.ic_lock_silent_mode_off)
-                .setContentIntent(contentPi)
+                .setContentIntent(fullPi)
+                .setFullScreenIntent(fullPi, true)
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE | NotificationCompat.DEFAULT_LIGHTS)
-                .addAction(0, "إيقاف", stopPi)
-                .build();
+                .addAction(0, "إيقاف", stopPi);
+
+        return b.build();
     }
 
     private void acquireWakeLock() {
@@ -137,13 +143,56 @@ public class AdhanPlaybackService extends Service {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             if (pm == null) return;
             wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "alkawthar:adhan_play");
-            wakeLock.acquire(15 * 60 * 1000L);
+            wakeLock.acquire(20 * 60 * 1000L);
+        } catch (Exception ignored) {}
+    }
+
+    private void requestAlarmFocus() {
+        try {
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) return;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                AudioAttributes attrs = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build();
+                focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                        .setAudioAttributes(attrs)
+                        .build();
+                audioManager.requestAudioFocus(focusRequest);
+            } else {
+                audioManager.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
+            }
+        } catch (Exception ignored) {}
+    }
+
+    private void abandonFocus() {
+        try {
+            if (audioManager == null) return;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && focusRequest != null) {
+                audioManager.abandonAudioFocusRequest(focusRequest);
+            } else {
+                audioManager.abandonAudioFocus(null);
+            }
         } catch (Exception ignored) {}
     }
 
     private void startAudio(String soundAsset) {
         stopPlayer();
         String path = normalizeAssetPath(soundAsset);
+        if (!tryPlayAsset(path)) {
+            if (!tryPlayAsset("www/audio/adhan/default.mp3")) {
+                String listed = firstAdhanAsset();
+                if (listed == null || !tryPlayAsset(listed)) {
+                    stopPlaybackAndSelf();
+                }
+            }
+        }
+    }
+
+    private boolean tryPlayAsset(String path) {
+        if (path == null || path.isEmpty()) return false;
+        AssetFileDescriptor afd = null;
         try {
             player = new MediaPlayer();
             player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
@@ -155,24 +204,45 @@ public class AdhanPlaybackService extends Service {
             } else {
                 player.setAudioStreamType(AudioManager.STREAM_ALARM);
             }
-            AssetFileDescriptor afd = getAssets().openFd(path);
+            afd = getAssets().openFd(path);
             player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
+            afd = null;
             player.setOnCompletionListener(mp -> stopPlaybackAndSelf());
             player.setOnErrorListener((mp, what, extra) -> {
                 stopPlaybackAndSelf();
                 return true;
             });
+            player.setVolume(1f, 1f);
             player.prepare();
             player.start();
+            return true;
         } catch (Exception e) {
-            stopPlaybackAndSelf();
+            if (afd != null) {
+                try { afd.close(); } catch (IOException ignored) {}
+            }
+            stopPlayer();
+            return false;
         }
+    }
+
+    private String firstAdhanAsset() {
+        try {
+            AssetManager am = getAssets();
+            String[] names = am.list("www/audio/adhan");
+            if (names == null) return null;
+            for (String n : names) {
+                if (n != null && n.toLowerCase().endsWith(".mp3")) {
+                    return "www/audio/adhan/" + n;
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 
     static String normalizeAssetPath(String soundAsset) {
         if (soundAsset == null || soundAsset.trim().isEmpty()) {
-            return "www/audio/adhan/placeholder.mp3";
+            return "www/audio/adhan/default.mp3";
         }
         String p = soundAsset.trim().replace('\\', '/');
         if (p.startsWith("/")) p = p.substring(1);
@@ -192,6 +262,7 @@ public class AdhanPlaybackService extends Service {
 
     private void stopPlaybackAndSelf() {
         stopPlayer();
+        abandonFocus();
         try {
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm != null) nm.cancel(NOTIF_ID);
@@ -207,6 +278,7 @@ public class AdhanPlaybackService extends Service {
     @Override
     public void onDestroy() {
         stopPlayer();
+        abandonFocus();
         if (wakeLock != null && wakeLock.isHeld()) {
             try { wakeLock.release(); } catch (Exception ignored) {}
         }
